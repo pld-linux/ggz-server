@@ -23,7 +23,7 @@ serwerów gier.
 
 %package devel
 Summary:	Header files for ggz-server library
-Summary(pl.UTF-8):Pliki nagłówkowe biblioteki ggz-server
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ggz-server
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
