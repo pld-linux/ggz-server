@@ -9,18 +9,21 @@ Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{versio
 # Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
 Source1:	%{name}.init
 URL:		http://www.ggzgamingzone.org/
-#BuildRequires:	
+#BuildRequires:
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-This package contains the main GGZ server, some administrative utilities, a game server handling library and lots of game servers.
+This package contains the main GGZ server, some administrative
+utilities, a game server handling library and lots of game servers.
 
 %description -l pl.UTF-8
-Ta paczka zawiera główny serwer GGZ, kilka narzędzi administracyjnych, bibliotekę sterującą serwerem oraz dużo serwerów gier.
+Ta paczka zawiera główny serwer GGZ, kilka narzędzi
+administracyjnych, bibliotekę sterującą serwerem oraz dużo
+serwerów gier.
 
 %package devel
 Summary:	Header files for ggz-server library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ggz-server
+Summary(pl.UTF-8):Pliki nagłówkowe biblioteki ggz-server
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
