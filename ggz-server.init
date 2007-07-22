@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# chkconfig:	345 90 12
+# description:	GGZ project games server
+#
+# ggzd		GGZ project games server deamon
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get service config
+[ -f /etc/sysconfig/ggzd ] && . /etc/sysconfig/ggzd
+
+start() {
+	if [ ! -f /var/lock/subsys/ggzd ]; then
+		msg_starting ggzd
+		daemon /usr/bin/ggzd -D -l /var/log/ggz-server.log
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ggzd
+	else
+		msg_already_running ggzd
+	fi
+}
+
+stop() {
+	if [ -f /var/lock/subsys/ggzd ]; then
+		msg_stopping ggzd
+		killproc ggzd
+		rm /var/lock/subsys/ggzd
+	else
+		msg_not_running ggzd
+	fi
+}
+
+RETVAL=0
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+	status ggzd
+	exit $?
+	;;
+  restart|force-reload)
+	stop
+	start
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
