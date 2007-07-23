@@ -1,3 +1,6 @@
+# TODO:
+# - check *.dsc and *.room files. Are we need them?
+
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
@@ -9,7 +12,7 @@ Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{versio
 # Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
 Source1:	%{name}.init
 URL:		http://www.ggzgamingzone.org/
-#BuildRequires:
+BuildRequires:	libggz >= 0.0.14
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
