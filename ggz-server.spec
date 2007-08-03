@@ -1,4 +1,5 @@
 # TODO:
+# - update for db 4.6 (now it's ready for 4.[01234])
 # - check *.dsc and *.room files. Are we need them?
 
 Summary:	Main GGZ server
@@ -12,7 +13,16 @@ Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{versio
 # Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
 Source1:	%{name}.init
 URL:		http://www.ggzgamingzone.org/
-BuildRequires:	libggz >= 0.0.14
+BuildRequires:	autoconf >= 2.50
+BuildRequires:	automake
+BuildRequires:	avahi-devel
+BuildRequires:	db-devel >= 4
+BuildRequires:	expat-devel >= 1.95
+BuildRequires:	libggz-devel >= 0.0.14
+BuildRequires:	libtool
+BuildRequires:	rpmbuild(macros) >= 1.268
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -29,6 +39,7 @@ Summary:	Header files for ggz-server library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ggz-server
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libggz-devel >= 0.0.14
 
 %description devel
 Header files for ggz-server library.
@@ -52,7 +63,8 @@ Statyczna biblioteka ggz-server.
 %setup -q
 
 %build
-%{__aclocal} -I m4/ -I m4/ggz/
+%{__libtoolize}
+%{__aclocal} -I m4 -I m4/ggz
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -73,6 +85,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ggzd
 rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 /sbin/chkconfig --add ggzd
 %service ggzd restart
 
@@ -82,15 +95,17 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del ggzd
 fi
 
+%postun	-p /sbin/ldconfig
+
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README TODO ggzd/ggzd.conf.example
 %attr(755,root,root) %{_bindir}/ggzd*
 %attr(755,root,root) %{_libdir}/ggzd
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %{_libdir}/lib*.so.6
+%attr(755,root,root) %ghost %{_libdir}/lib*.so.6
 %attr(754,root,root) /etc/rc.d/init.d/ggzd
-%{_datadir}/ggz/
+%{_datadir}/ggz
 %{_mandir}/man6/*.6*
 
 %files devel
