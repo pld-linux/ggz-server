@@ -1,7 +1,6 @@
 # TODO:
 # - update for db 4.6 (now it's ready for 4.[01234])
-# - check *.dsc and *.room files. Are we need them?
-
+# - fix init script
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
@@ -111,6 +110,11 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/ggzd
 %{_datadir}/ggz
 %{_mandir}/man6/*.6*
+%dir %{_sysconfdir}/ggzd/games
+%dir %{_sysconfdir}/ggzd/rooms
+%{_sysconfdir}/ggzd/ggzd.motd
+%{_sysconfdir}/ggzd/games/*.dsc
+%{_sysconfdir}/ggzd/rooms/*.room
 
 %files devel
 %defattr(644,root,root,755)
