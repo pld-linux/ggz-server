@@ -74,12 +74,14 @@ Statyczna biblioteka ggz-server.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,ggzd}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ggzd
+
+:> $RPM_BUILD_ROOT/etc/ggzd/ggzd.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -99,6 +101,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%dir %{_sysconfdir}/ggzd
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ggzd/*.conf
 %doc AUTHORS ChangeLog NEWS README TODO ggzd/ggzd.conf.example
 %attr(755,root,root) %{_bindir}/ggzd*
 %attr(755,root,root) %{_libdir}/ggzd
