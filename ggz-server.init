@@ -14,7 +14,7 @@
 start() {
 	if [ ! -f /var/lock/subsys/ggzd ]; then
 		msg_starting ggzd
-		daemon /usr/bin/ggzd -D -l /var/log/ggz-server.log
+		daemon /usr/bin/ggzd
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ggzd
 	else
