@@ -1,16 +1,18 @@
 # TODO:
-# - update for db 4.6 (now it's ready for 4.[01234])
-# - fix init script
+# - user / group for ggzd
+# - remove data from /var/lib/ggzd after removal of ggz-server package
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
 Version:	0.0.14
-Release:	0.1
+Release:	0.5
 License:	GPL v2+
 Group:		Applications
 Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{version}.tar.gz
 # Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
 Source1:	%{name}.init
+Source2:	%{name}.conf
+Patch0:		%{name}-db4.patch
 URL:		http://www.ggzgamingzone.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -21,17 +23,28 @@ BuildRequires:	libggz-devel >= 0.0.14
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 This package contains the main GGZ server, some administrative
-utilities, a game server handling library and lots of game servers.
+utilities and lots of game servers.
 
 %description -l pl.UTF-8
-Ta paczka zawiera główny serwer GGZ, kilka narzędzi
-administracyjnych, bibliotekę sterującą serwerem oraz dużo
-serwerów gier.
+Ta paczka zawiera główny serwer GGZ, kilka narzędzi administracyjnych
+oraz dużo serwerów gier.
+
+%package libs
+Summary:	ggz-server libraries
+Summary(pl.UTF-8):	Biblioteki ggz-server
+Group:		Libraries
+
+%description libs
+ggz-server libraries.
+
+%description libs -l pl.UTF-8
+Biblioteki ggz-server.
 
 %package devel
 Summary:	Header files for ggz-server library
@@ -60,6 +73,7 @@ Statyczna biblioteka ggz-server.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -67,26 +81,30 @@ Statyczna biblioteka ggz-server.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%configure
+%configure \
+	--with-database=db4 \
+	--with-zeroconf=avahi \
+	--with-reconfiguration=inotify
+
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,ggzd}
+install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,ggzd},%{_var}/{lib/ggzd,log}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ggzd
+sed -e 's,@LIBDIR@,%{_libdir},' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/ggzd/ggzd.conf
 
-:> $RPM_BUILD_ROOT/etc/ggzd/ggzd.conf
+:> $RPM_BUILD_ROOT%{_var}/log/ggz-server.log
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/ldconfig
 /sbin/chkconfig --add ggzd
 %service ggzd restart
 
@@ -96,33 +114,122 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del ggzd
 fi
 
-%postun	-p /sbin/ldconfig
+%post libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%dir %{_sysconfdir}/ggzd
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ggzd/*.conf
 %doc AUTHORS ChangeLog NEWS README TODO ggzd/ggzd.conf.example
-%attr(755,root,root) %{_bindir}/ggzd*
-%attr(755,root,root) %{_libdir}/ggzd
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/lib*.so.6
-%attr(754,root,root) /etc/rc.d/init.d/ggzd
-%{_datadir}/ggz
-%{_mandir}/man6/*.6*
+%attr(755,root,root) %{_bindir}/ggzd
+%attr(755,root,root) %{_bindir}/ggzduedit
+%dir %{_libdir}/ggzd
+%attr(755,root,root) %{_libdir}/ggzd/geekgameserver
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.ccheckers
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.chess
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.combat
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.connectx
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.dots
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.escape
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.ggzcards
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.ggzcards.ai-random
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.ggzcards.ai-spades
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.ggzcards.ai-suaro
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.hastings
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.reversi
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.spades
+%attr(755,root,root) %{_libdir}/ggzd/ggzd.tictactoe
+%attr(755,root,root) %{_libdir}/ggzd/keepalivesrv
+%attr(755,root,root) %{_libdir}/ggzd/krosswater_server
+%attr(755,root,root) %{_libdir}/ggzd/muehleserv
+%attr(755,root,root) %{_libdir}/ggzd/tuxmanserv
+%attr(755,root,root) %{_libdir}/ggzd/widelands_server
+%dir %{_sysconfdir}/ggzd
 %dir %{_sysconfdir}/ggzd/games
+%{_sysconfdir}/ggzd/games/ccheckers.dsc
+%{_sysconfdir}/ggzd/games/chess.dsc
+%{_sysconfdir}/ggzd/games/combat.dsc
+%{_sysconfdir}/ggzd/games/connectx.dsc
+%{_sysconfdir}/ggzd/games/dots.dsc
+%{_sysconfdir}/ggzd/games/escape.dsc
+%{_sysconfdir}/ggzd/games/geekgame.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-bridge.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-fortytwo.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-hearts.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-lapocha.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-spades.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-suaro.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-sueca.dsc
+%{_sysconfdir}/ggzd/games/ggzcards-whist.dsc
+%{_sysconfdir}/ggzd/games/ggzcards.dsc
+%{_sysconfdir}/ggzd/games/hastings.dsc
+%{_sysconfdir}/ggzd/games/keepalive.dsc
+%{_sysconfdir}/ggzd/games/krosswater.dsc
+%{_sysconfdir}/ggzd/games/muehle.dsc
+%{_sysconfdir}/ggzd/games/reversi.dsc
+%{_sysconfdir}/ggzd/games/spades.dsc
+%{_sysconfdir}/ggzd/games/tictactoe.dsc
+%{_sysconfdir}/ggzd/games/tuxman.dsc
+%{_sysconfdir}/ggzd/games/widelands.dsc
 %dir %{_sysconfdir}/ggzd/rooms
+%{_sysconfdir}/ggzd/rooms/ccheckers.room
+%{_sysconfdir}/ggzd/rooms/chess.room
+%{_sysconfdir}/ggzd/rooms/combat.room
+%{_sysconfdir}/ggzd/rooms/connectx.room
+%{_sysconfdir}/ggzd/rooms/dots.room
+%{_sysconfdir}/ggzd/rooms/entry.room
+%{_sysconfdir}/ggzd/rooms/escape.room
+%{_sysconfdir}/ggzd/rooms/geekgame.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-bridge.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-fortytwo.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-hearts.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-lapocha.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-spades.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-suaro.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-sueca.room
+%{_sysconfdir}/ggzd/rooms/ggzcards-whist.room
+%{_sysconfdir}/ggzd/rooms/ggzcards.room
+%{_sysconfdir}/ggzd/rooms/hastings.room
+%{_sysconfdir}/ggzd/rooms/keepalive.room
+%{_sysconfdir}/ggzd/rooms/krosswater.room
+%{_sysconfdir}/ggzd/rooms/muehle.room
+%{_sysconfdir}/ggzd/rooms/reversi.room
+%{_sysconfdir}/ggzd/rooms/spades.room
+%{_sysconfdir}/ggzd/rooms/tictactoe.room
+%{_sysconfdir}/ggzd/rooms/tuxman.room
+%{_sysconfdir}/ggzd/rooms/widelands.room
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ggzd/ggzd.conf
 %{_sysconfdir}/ggzd/ggzd.motd
-%{_sysconfdir}/ggzd/games/*.dsc
-%{_sysconfdir}/ggzd/rooms/*.room
+%attr(754,root,root) /etc/rc.d/init.d/ggzd
+%dir %{_datadir}/ggz/ggzd
+%{_datadir}/ggz/ggzd/ggzcards
+%{_datadir}/ggz/ggzd/hastings1066
+%{_datadir}/ggz/ggzd/muehle
+%{_datadir}/ggz/ggzd/tuxmanserv
+%{_mandir}/man6/ggzd.6*
+%{_mandir}/man6/ggzduedit.6*
+%dir %{_var}/lib/ggzd
+%attr(640,root,root) %ghost %{_var}/log/ggz-server.log
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libggzdmod++.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libggzdmod++.so.1
+%attr(755,root,root) %{_libdir}/libggzdmod.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libggzdmod.so.6
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/*
-%{_mandir}/man3/*.3*
+%attr(755,root,root) %{_libdir}/libggzdmod++.so
+%attr(755,root,root) %{_libdir}/libggzdmod.so
+%{_libdir}/libggzdmod++.la
+%{_libdir}/libggzdmod.la
+%{_libdir}/libggzdmod++.la
+%{_libdir}/libggzdmod.la
+%{_includedir}/ggzdmod++
+%{_includedir}/ggzdmod.h
+%{_mandir}/man3/ggzdmod.h.3*
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libggzdmod++.a
+%{_libdir}/libggzdmod.a
