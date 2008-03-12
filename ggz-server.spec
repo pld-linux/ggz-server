@@ -1,11 +1,10 @@
 # TODO:
-# - user / group for ggzd
 # - remove data from /var/lib/ggzd after removal of ggz-server package
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
 Version:	0.0.14
-Release:	0.5
+Release:	1
 License:	GPL v2+
 Group:		Applications
 Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{version}.tar.gz
