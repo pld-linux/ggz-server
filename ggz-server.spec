@@ -1,16 +1,18 @@
 # TODO:
 # - remove data from /var/lib/ggzd after removal of ggz-server package
+#
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
 Version:	0.0.14
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications
 Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{version}.tar.gz
 # Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
 Source1:	%{name}.init
 Source2:	%{name}.conf
+Source3:	%{name}.logrotate
 Patch0:		%{name}-db4.patch
 URL:		http://www.ggzgamingzone.org/
 BuildRequires:	autoconf >= 2.50
@@ -25,6 +27,8 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_localstatedir	/var/lib
 
 %description
 This package contains the main GGZ server, some administrative
@@ -90,13 +94,14 @@ Statyczna biblioteka ggz-server.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,ggzd},%{_var}/{lib/ggzd,log}}
+install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,ggzd,logrotate.d},%{_var}/{lib/ggzd,log}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ggzd
 sed -e 's,@LIBDIR@,%{_libdir},' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/ggzd/ggzd.conf
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
 :> $RPM_BUILD_ROOT%{_var}/log/ggz-server.log
 
@@ -196,9 +201,10 @@ fi
 %{_sysconfdir}/ggzd/rooms/tictactoe.room
 %{_sysconfdir}/ggzd/rooms/tuxman.room
 %{_sysconfdir}/ggzd/rooms/widelands.room
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ggzd/ggzd.conf
+%attr(640,root,games) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ggzd/ggzd.conf
 %{_sysconfdir}/ggzd/ggzd.motd
 %attr(754,root,root) /etc/rc.d/init.d/ggzd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/ggz-server
 %dir %{_datadir}/ggz/ggzd
 %{_datadir}/ggz/ggzd/ggzcards
 %{_datadir}/ggz/ggzd/hastings1066
@@ -206,8 +212,8 @@ fi
 %{_datadir}/ggz/ggzd/tuxmanserv
 %{_mandir}/man6/ggzd.6*
 %{_mandir}/man6/ggzduedit.6*
-%dir %{_var}/lib/ggzd
-%attr(640,root,root) %ghost %{_var}/log/ggz-server.log
+%attr(770,root,games) %{_localstatedir}/ggzd
+%attr(660,root,games) %config(noreplace) %verify(not md5 mtime size) %{_var}/log/ggz-server.log
 
 %files libs
 %defattr(644,root,root,755)
