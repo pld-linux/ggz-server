@@ -4,12 +4,12 @@
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
-Version:	0.0.14
-Release:	2
+Version:	0.0.14.1
+Release:	1
 License:	GPL v2+
 Group:		Applications
-Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/%{name}-%{version}.tar.gz
-# Source0-md5:	7e30eedefb69834d9f76fdf7fed646ea
+Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	254caaf8fe7b4a2bafcb62576abba72c
 Source1:	%{name}.init
 Source2:	%{name}.conf
 Source3:	%{name}.logrotate
