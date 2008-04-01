@@ -1,6 +1,3 @@
-# TODO:
-# - remove data from /var/lib/ggzd after removal of ggz-server package
-#
 Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
@@ -119,7 +116,10 @@ if [ "$1" = "0" ]; then
 fi
 
 %post libs -p /sbin/ldconfig
-%postun	libs -p /sbin/ldconfig
+
+%postun	
+libs -p /sbin/ldconfig
+rm -rf /var/libs/ggzd
 
 %files
 %defattr(644,root,root,755)
