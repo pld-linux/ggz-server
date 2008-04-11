@@ -50,6 +50,7 @@ Biblioteki ggz-server.
 Summary:	Header files for ggz-server library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ggz-server
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libggz-devel >= 0.0.14
 
