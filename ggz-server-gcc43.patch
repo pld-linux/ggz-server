@@ -1,0 +1,12 @@
+diff -urN ggz-server-0.0.14.1/game_servers/keepalive/src/world.cpp ggz-server-0.0.14.1.new/game_servers/keepalive/src/world.cpp
+--- ggz-server-0.0.14.1/game_servers/keepalive/src/world.cpp	2008-01-05 20:03:01.000000000 +0100
++++ ggz-server-0.0.14.1.new/game_servers/keepalive/src/world.cpp	2008-07-09 10:57:20.000000000 +0200
+@@ -30,7 +30,7 @@
+ #include <iostream>
+ #include <sys/types.h>
+ #include <dirent.h>
+-#include <string>
++#include <cstring>
+ 
+ // Configuration
+ #include "config.h"
