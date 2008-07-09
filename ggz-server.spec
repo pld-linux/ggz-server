@@ -2,7 +2,7 @@ Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
 Version:	0.0.14.1
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Applications
 Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/%{version}/%{name}-%{version}.tar.gz
@@ -11,6 +11,7 @@ Source1:	%{name}.init
 Source2:	%{name}.conf
 Source3:	%{name}.logrotate
 Patch0:		%{name}-db4.patch
+Patch1:		%{name}-gcc43.patch
 URL:		http://www.ggzgamingzone.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -74,6 +75,7 @@ Statyczna biblioteka ggz-server.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
