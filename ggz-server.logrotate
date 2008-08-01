@@ -1,11 +1,8 @@
 /var/log/ggz-server.log {
 	olddir /var/log/archive
-	weekly
-	rotate 7
 	compress
 	create 660 root games
 	postrotate
-		/etc/rc.d/init.d/ggzd restart >/dev/null 2>&1
+		/sbin/service ggzd restart >/dev/null
 	endscript
 }
-
