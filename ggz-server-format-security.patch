@@ -1,0 +1,71 @@
+--- ggz-server-0.0.14.1/ggzd/players.c.orig	2012-11-18 21:05:32.065729146 +0100
++++ ggz-server-0.0.14.1/ggzd/players.c	2012-11-18 21:06:03.019061387 +0100
+@@ -971,7 +971,7 @@
+ 
+ 	for (i = first; i < last; i++) {
+ 		if (table->seat_types[i] == GGZ_SEAT_PLAYER) {
+-			snprintf(entry.handle, sizeof(entry.handle), player->name);
++			snprintf(entry.handle, sizeof(entry.handle), "%s", player->name);
+ 			status = ggzdb_player_get(&entry);
+ 
+ 			do_send = 1;
+@@ -982,7 +982,7 @@
+ 			if (status == GGZDB_NO_ERROR) {
+ 				realname = ggz_strdup(entry.name);
+ 
+-				snprintf(extentry.handle, sizeof(extentry.handle), player->name);
++				snprintf(extentry.handle, sizeof(extentry.handle), "%s", player->name);
+ 				status = ggzdb_player_get_extended(&extentry);
+ 				if (status == GGZDB_NO_ERROR) {
+ 					photo = ggz_strdup(extentry.photo);
+@@ -1552,7 +1552,7 @@
+ 	if (ggz_perms_is_set(rcvr->perms, perm) != set) {
+ 		ggzdbPlayerEntry entry;
+ 
+-		snprintf(entry.handle, sizeof(entry.handle), rcvr->name);
++		snprintf(entry.handle, sizeof(entry.handle), "%s", rcvr->name);
+ 		if (ggzdb_player_get(&entry) != GGZDB_NO_ERROR) {
+ 			pthread_rwlock_unlock(&rcvr->lock);
+ 			if (net_send_admin_result(player->client->net,
+--- ggz-server-0.0.14.1/ggzd/net.c.orig	2012-11-18 21:06:29.149060466 +0100
++++ ggz-server-0.0.14.1/ggzd/net.c	2012-11-18 21:06:47.019059835 +0100
+@@ -370,7 +370,7 @@
+ 		
+ 	for (i = 0; i < num; i++) {
+ 		line = motd_get_line(i);
+-		_net_send_line(net, line);
++		_net_send_line(net, "%s", line);
+ 		ggz_free(line);
+ 	}
+ 
+--- ggz-server-0.0.14.1/ggzd/stats.c.orig	2012-11-18 21:07:04.102392566 +0100
++++ ggz-server-0.0.14.1/ggzd/stats.c	2012-11-18 21:07:32.142391577 +0100
+@@ -265,7 +265,7 @@
+ 		}
+ 
+ 		snprintf(player.handle, sizeof(player.handle),
+-			 report->names[i]);
++			 "%s", report->names[i]);
+ 
+ 		/* Find out player type */
+ 		if (report->types[i] == GGZ_SEAT_BOT) {
+@@ -307,7 +307,7 @@
+ 
+ 		if (report->types[i] == GGZ_SEAT_PLAYER) {
+ 			snprintf(stats[i].player, sizeof(stats[i].player),
+-				 report->names[i]);
++				 "%s", report->names[i]);
+ 		} else if (report->types[i] == GGZ_SEAT_BOT) {
+ 			if(!ggz_strcmp(report->names[i], "AI")) {
+ 				snprintf(stats[i].player, sizeof(stats[i].player),
+--- ggz-server-0.0.14.1/ggzd/login.c~	2008-01-05 20:03:09.000000000 +0100
++++ ggz-server-0.0.14.1/ggzd/login.c	2012-11-18 21:07:53.722390816 +0100
+@@ -74,7 +74,7 @@
+ 
+ 	new_pw[0] = '\0';
+ 	if(password)
+-		snprintf(new_pw, sizeof(new_pw), password);
++		snprintf(new_pw, sizeof(new_pw), "%s", password);
+ 
+ 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
+ 	        player, type);
