@@ -1,0 +1,40 @@
+--- ggz-server-0.0.14.1/game_servers/muehle/qtserv/qlist.h~	2008-01-05 20:02:54.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/muehle/qtserv/qlist.h	2012-11-18 21:30:23.122343215 +0100
+@@ -2,6 +2,7 @@
+ #define QLIST_H
+ 
+ #include <list>
++#include <cstdlib>
+ 
+ template<class T> class QList : public std::list<T>
+ {
+--- ggz-server-0.0.14.1/game_servers/muehle/main.cpp~	2008-01-05 20:02:55.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/muehle/main.cpp	2012-11-18 21:30:55.195675418 +0100
+@@ -22,6 +22,7 @@
+ #include <iostream>
+ #include <getopt.h>
+ #include <cstdlib>
++#include <cstdio>
+ 
+ // Version information
+ #define MUEHLE_VERSION "0.1"
+--- ggz-server-0.0.14.1/game_servers/geekgame/main.cpp~	2008-01-05 20:03:01.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/geekgame/main.cpp	2012-11-18 21:31:18.402341265 +0100
+@@ -22,6 +22,7 @@
+ #include <iostream>
+ #include <getopt.h>
+ #include <cstdlib>
++#include <cstdio>
+ #include <ctime>
+ 
+ // Version information
+--- ggz-server-0.0.14.1/game_servers/widelands/main.cpp~	2008-01-05 20:03:02.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/widelands/main.cpp	2012-11-18 21:31:43.242340389 +0100
+@@ -22,6 +22,7 @@
+ #include <iostream>
+ #include <getopt.h>
+ #include <cstdlib>
++#include <cstdio>
+ #include <ctime>
+ 
+ // Version information
