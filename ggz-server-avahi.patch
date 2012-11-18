@@ -1,0 +1,11 @@
+--- ggz-server-0.0.14.1/m4/zeroconf.m4~	2008-01-05 20:02:52.000000000 +0100
++++ ggz-server-0.0.14.1/m4/zeroconf.m4	2012-11-18 21:10:01.612386304 +0100
+@@ -40,7 +40,7 @@
+ 	elif test "$zeroconf" = "avahi"; then
+ 		AC_DEFINE(WITH_AVAHI, 1, [Use avahi for zeroconf mechanism])
+ 		AVAHI_INCLUDES="-I/usr/include"
+-		LIB_AVAHI="-lavahi-client"
++		LIB_AVAHI="-lavahi-client -lavahi-common"
+ 		AC_SUBST(AVAHI_INCLUDES)
+ 		AC_SUBST(LIB_AVAHI)
+ 	else
