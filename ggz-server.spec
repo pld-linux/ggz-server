@@ -2,7 +2,7 @@ Summary:	Main GGZ server
 Summary(pl.UTF-8):	Główny serwer GGZ
 Name:		ggz-server
 Version:	0.0.14.1
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Applications
 Source0:	http://ftp.belnet.be/packages/ggzgamingzone/ggz/%{version}/%{name}-%{version}.tar.gz
