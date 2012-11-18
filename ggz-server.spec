@@ -235,8 +235,6 @@ fi
 %attr(755,root,root) %{_libdir}/libggzdmod.so
 %{_libdir}/libggzdmod++.la
 %{_libdir}/libggzdmod.la
-%{_libdir}/libggzdmod++.la
-%{_libdir}/libggzdmod.la
 %{_includedir}/ggzdmod++
 %{_includedir}/ggzdmod.h
 %{_mandir}/man3/ggzdmod.h.3*
