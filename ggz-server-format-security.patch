@@ -69,3 +69,27 @@
  
  	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
  	        player, type);
+--- ggz-server-0.0.14.1/game_servers/ggzcards/games/bridge.c~	2008-01-05 20:02:58.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/ggzcards/games/bridge.c	2012-11-18 21:28:51.902346432 +0100
+@@ -585,7 +585,7 @@
+ 	/* TODO: vulnerable, etc. */
+ 
+ 	set_global_message("", "%s", buf);
+-	set_global_message("Hand Score", buf2);
++	set_global_message("Hand Score", "%s", buf2);
+ 	bridge_set_score_message();
+ 
+ 	BRIDGE.declarer = BRIDGE.dummy = -1;
+--- ggz-server-0.0.14.1/game_servers/ggzcards/games/euchre.c~	2008-01-05 20:02:58.000000000 +0100
++++ ggz-server-0.0.14.1/game_servers/ggzcards/games/euchre.c	2012-11-18 21:29:14.285678973 +0100
+@@ -443,8 +443,8 @@
+ 
+ 	snprintf(buf, sizeof(buf), msg, tricks, value);
+ 	/* This message is quickly overwritten by the up-card message.  Ugh. */
+-	set_global_message("", buf);
+-	set_global_message("Scoring History", buf);	/* FIXME: this should 
++	set_global_message("", "%s", buf);
++	set_global_message("Scoring History", "%s", buf);	/* FIXME: this should 
+ 							   be added to the
+ 							   history, not
+ 							   overwrite it. */
